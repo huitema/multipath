@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-02-01T00:33:24.541238+00:00",
+  "timestamp": "2022-02-03T00:31:52.641240+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -1968,7 +1968,7 @@
       "labels": [],
       "body": "In 3.2.3, we have the following paragraph:\r\n\r\n     When more than one path is available, servers shall monitor the arrival of non-probing packets on the available paths. Servers   \r\n     SHOULD stop sending traffic on paths through where no non-probing packet was received in the last 3 path RTTs, but MAY\r\n     ignore that rule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints can send ack-eliciting packets\r\n     such as packets containing PING frames Section 19.2 of [QUIC-TRANSPORT] on that path to keep it alive. Sending periodic\r\n     PING frames also helps prevent middlebox timeout, as discussed in Section 10.1.2 of [QUIC-TRANSPORT].\r\n\r\nThis paragraph implicitly indicates that we consider a path to be active if we send and receive packets on this path. This definition works well for MPTCP where each data packet triggers an ACK on the same path. In MPQUIC, a server could have two paths that it uses to send data. However, the client might decide to always send the ACKs on only one path (e.g. the lowest delay one). In this case, the two paths are clearly active, but the server could consider the higher delay path to be inactive since it does not receive packets over this path. It could send PING frames to trigger data packets, but then it would need to send one PING every 3 RTT, which seams excessive. \r\n\r\nI would suggest to rewrite the text as follows (I removed Server, because I think the recommendation should be generic):\r\n\r\n     When more than one path is available, hosts shall monitor both the arrival of non-probing packets and the acknowledgements \r\n     for the packets sent over each path. Hosts SHOULD stop sending traffic on paths whether either: (a) no non-probing packet\r\n     was received in the last 3 path RTT or (b) no non-probing packet sent over this path was acknowledged during the last 3 path \r\n     RTT, but MAY ignore that rule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints can send \r\n     ack-eliciting packets such as packets containing PING frames Section 19.2 of [QUIC-TRANSPORT] on that path to keep \r\n     it alive. Sending periodic PING frames also helps prevent middlebox timeout, as discussed in Section 10.1.2 of [QUIC-TRANSPORT].\r\n",
       "createdAt": "2022-01-14T15:37:35Z",
-      "updatedAt": "2022-01-20T10:59:03Z",
+      "updatedAt": "2022-02-02T19:51:40Z",
       "closedAt": null,
       "comments": [
         {
@@ -1984,6 +1984,20 @@
           "body": "Yes, I think this is a good clarification and yes \"either\" might be confusing here. ",
           "createdAt": "2022-01-20T10:59:03Z",
           "updatedAt": "2022-01-20T10:59:03Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I commented on the PR. I don't like the idea that receivers would have to stop acknowledging packets in order to signal preference to not use a path. We need to think that a little more.",
+          "createdAt": "2022-02-02T19:39:38Z",
+          "updatedAt": "2022-02-02T19:39:38Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "So we have a choice:\r\n\r\n* either say that nodes should regularly send non-probing packets over the path that they want to keep using,\r\n* or if we don't want that, accept the idea that acks on other paths show continuity, and require \"abandon path\" to terminate a path that is otherwise working, acknowledges packets, etc..",
+          "createdAt": "2022-02-02T19:51:40Z",
+          "updatedAt": "2022-02-02T19:51:40Z"
         }
       ]
     },
@@ -1999,7 +2013,7 @@
       "labels": [],
       "body": "RFC9000 defines a list of transport parameters.\r\n\r\n0x01 | max_idle_timeout | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x02 | stateless_reset_token | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x03 | max_udp_payload_size | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x04 | initial_max_data | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x05 | initial_max_stream_data_bidi_local | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x06 | initial_max_stream_data_bidi_remote | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x07 | initial_max_stream_data_uni | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x08 | initial_max_streams_bidi | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x09 | initial_max_streams_uni | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0a | ack_delay_exponent | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0b | max_ack_delay | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0c | disable_active_migration | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0d | preferred_address | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0e | active_connection_id_limit | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0f | initial_source_connection_id | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x10 | retry_source_connection_id | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG]\r\n\r\n\r\nThese transport parameters apply to all the paths that compose a Multipath QUIC connection. We should probably confirm this in the mpquic draft to avoid any misinterpretation (e.g. for max_idle_timeout or ack delays). There are two transport parameters that could warrant some discussion:\r\n\r\n- disable_active_migration : This transport parameter is incompatible with enable_multipath. An endpoint that receives both this transport parameter and a non zero enable_multipath parameter MUST treat this as a connection error of type\r\nMP_CONNECTION_ERROR and close the connection.\r\n- preferred_address: RFC9000, section 9.2.1 contains the following:\r\n\r\n   Once the handshake is confirmed, the client SHOULD select one of the two addresses provided by the server and initiate path    \r\n  validation (see Section 8.2). A client constructs packets using any previously unused active connection ID, taken from either the \r\n  preferred_address transport parameter or a NEW_CONNECTION_ID frame.\r\n\r\n  As soon as path validation succeeds, the client SHOULD begin sending all future packets to the new server address using the \r\n  new connection ID and discontinue use of the old server address. If path validation fails, the client MUST continue sending all \r\n  future packets to the server's original IP address.\r\n\r\nFor multipath, do we want to be stronger than SHOULD select one ? Can a client create news paths towards the initial address or only to one of the preferred addresses ? Should the client use both addresses (IPv4 and IPv6) if non-empty ?",
       "createdAt": "2022-01-18T13:39:57Z",
-      "updatedAt": "2022-01-18T19:43:42Z",
+      "updatedAt": "2022-02-02T12:36:53Z",
       "closedAt": null,
       "comments": [
         {
@@ -2008,6 +2022,20 @@
           "body": "Good point about \"disable_active_migration\". I would read it as also disabling multipath.\r\n\r\nWe do not need to say that \"transport parameters apply to all the paths that compose a Multipath QUIC connection\". We are already inheriting that property from compatibility with path migration in RFC 9000. Multipath support is an extension to QUIC v1, not a new protocol, so we do not need to specify all the defaults. Same goes for the preferred address -- meaning does not change just because the nodes negotiate multipath.\r\n\r\nI would avoid debating \"which server addresses the client can try\" in the base multipath document. If we want the server to signal plausible addresses to the client, let's have a specific document for that.\r\n",
           "createdAt": "2022-01-18T19:43:42Z",
           "updatedAt": "2022-01-18T19:43:42Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I would maybe add a sentence that this draft does not change the meaning of preferred_address and if that address could also be used for multipath is out of scope for this extension.",
+          "createdAt": "2022-02-02T12:27:32Z",
+          "updatedAt": "2022-02-02T12:27:32Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Regarding disable_active_migration: this cannot be a connection error, as you can also send preferred address and after migration to the preferred address you can still use migration or multipath (if negotiated). I think the definition in RFC9000 is still valid; it means you can't send any packets from another address than the one used in the handshake. Which effectively means disabling multipath as well as Christian noted (if not moved to another preferred address). I guess we could explicitly note that this draft does not change the definition of disable_active_migration. \r\n\r\nFor your reference this is what RFC9000 says:\r\n```\r\ndisable_active_migration (0x0c):\r\nThe disable active migration transport parameter is included if the endpoint does not support active \r\nconnection migration (Section 9) on the address being used during the handshake. An endpoint\r\nthat receives this transport parameter MUST NOT use a new local address when sending to the\r\naddress that the peer used during the handshake. This transport parameter does not prohibit\r\nconnection migration after a client has acted on a preferred_address transport parameter.\r\nThis parameter is a zero-length value.\r\n```",
+          "createdAt": "2022-02-02T12:36:23Z",
+          "updatedAt": "2022-02-02T12:36:53Z"
         }
       ]
     },
@@ -6024,6 +6052,46 @@
           "body": "",
           "createdAt": "2022-01-29T10:16:50Z",
           "updatedAt": "2022-01-29T10:16:50Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 94,
+      "id": "PR_kwDOGNtpaM4x9vEY",
+      "title": "Text from Olivier about active paths",
+      "url": "https://github.com/quicwg/multipath/pull/94",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #90",
+      "createdAt": "2022-02-02T12:46:26Z",
+      "updatedAt": "2022-02-02T19:36:07Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "master",
+      "baseRefOid": "3852c066d044326aac5f59fc6f9b4b34729a881b",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-6",
+      "headRefOid": "70d29b4ef08074019cb7d3df107bb7d6d186a6e7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM4z6q7Q",
+          "commit": {
+            "abbreviatedOid": "70d29b4"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "The old text was stating \"do not send if no non-probing packet received over 3 RTT\". The new text essentially adds \"do not send if no non-probing packet received or acknowledged over 3 RTT.\" At first sight it looks right, but there is a tension. Suppose that, as a receiver, I wish the sender would stop sending on a path. With the old rule, I can simply stop sending on that path. With the new rule, I would have to also stop acknowledging packets, even if those packets were received correctly. That's not natural, a tension between signalling path preference and creating artificial losses. All considered, I would rather keep the old text.",
+          "createdAt": "2022-02-02T19:36:07Z",
+          "updatedAt": "2022-02-02T19:36:07Z",
           "comments": []
         }
       ]
