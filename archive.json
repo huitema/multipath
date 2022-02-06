@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-02-03T00:31:52.641240+00:00",
+  "timestamp": "2022-02-06T00:38:21.140037+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -1968,7 +1968,7 @@
       "labels": [],
       "body": "In 3.2.3, we have the following paragraph:\r\n\r\n     When more than one path is available, servers shall monitor the arrival of non-probing packets on the available paths. Servers   \r\n     SHOULD stop sending traffic on paths through where no non-probing packet was received in the last 3 path RTTs, but MAY\r\n     ignore that rule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints can send ack-eliciting packets\r\n     such as packets containing PING frames Section 19.2 of [QUIC-TRANSPORT] on that path to keep it alive. Sending periodic\r\n     PING frames also helps prevent middlebox timeout, as discussed in Section 10.1.2 of [QUIC-TRANSPORT].\r\n\r\nThis paragraph implicitly indicates that we consider a path to be active if we send and receive packets on this path. This definition works well for MPTCP where each data packet triggers an ACK on the same path. In MPQUIC, a server could have two paths that it uses to send data. However, the client might decide to always send the ACKs on only one path (e.g. the lowest delay one). In this case, the two paths are clearly active, but the server could consider the higher delay path to be inactive since it does not receive packets over this path. It could send PING frames to trigger data packets, but then it would need to send one PING every 3 RTT, which seams excessive. \r\n\r\nI would suggest to rewrite the text as follows (I removed Server, because I think the recommendation should be generic):\r\n\r\n     When more than one path is available, hosts shall monitor both the arrival of non-probing packets and the acknowledgements \r\n     for the packets sent over each path. Hosts SHOULD stop sending traffic on paths whether either: (a) no non-probing packet\r\n     was received in the last 3 path RTT or (b) no non-probing packet sent over this path was acknowledged during the last 3 path \r\n     RTT, but MAY ignore that rule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints can send \r\n     ack-eliciting packets such as packets containing PING frames Section 19.2 of [QUIC-TRANSPORT] on that path to keep \r\n     it alive. Sending periodic PING frames also helps prevent middlebox timeout, as discussed in Section 10.1.2 of [QUIC-TRANSPORT].\r\n",
       "createdAt": "2022-01-14T15:37:35Z",
-      "updatedAt": "2022-02-02T19:51:40Z",
+      "updatedAt": "2022-02-03T19:02:24Z",
       "closedAt": null,
       "comments": [
         {
@@ -1998,6 +1998,20 @@
           "body": "So we have a choice:\r\n\r\n* either say that nodes should regularly send non-probing packets over the path that they want to keep using,\r\n* or if we don't want that, accept the idea that acks on other paths show continuity, and require \"abandon path\" to terminate a path that is otherwise working, acknowledges packets, etc..",
           "createdAt": "2022-02-02T19:51:40Z",
           "updatedAt": "2022-02-02T19:51:40Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, I think the second option is what we are aiming for with the new text. Stopping ack'ing packets to stop someone sending on a path is wrong and is something you should never do. If you receive a packet successfully you should ack it (also because that would otherwise confuse congestion control). But we have the abandon frame exactly for that case.\r\n\r\nHowever, it also seems wrong to me to require sending acks on the same path taen the data is received. So if you decide to always only send ack on one path and all payload data flows into one direction only over multiple paths, the current text would require you to send potentially unnecessary ping packets over each non-ack'ing paths or you would end up closing those paths which also is wrong as everything seems to work fine.\r\n\r\nSo the question is really is, do we want to require pings in this scenario (payload traffic over multiple paths but acks only on one path) in order to ensure that all paths are usable bidirectionally? I think that's unnecessary overhead and believe Olivier's proposed addition is the correct thing to do.",
+          "createdAt": "2022-02-03T09:59:01Z",
+          "updatedAt": "2022-02-03T09:59:01Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I can look at what I implemented in picoquic:\r\n\r\n* If there is no traffic in either direction for the idle period, the path is automatically abandoned. If traffic is sent and acked, or traffic is received, the path is not considered idle. This is pretty much what Olivier proposed.\r\n* If there is a \"timer loss\", and if there is an alternate, the path is put in a low priority list. The node will send ping and try get an ack. If no ack is received after N trials, the path is abandoned.\r\n* If \"abandon path\" frame is received, the path is abandoned.",
+          "createdAt": "2022-02-03T19:02:24Z",
+          "updatedAt": "2022-02-03T19:02:24Z"
         }
       ]
     },
@@ -6068,18 +6082,33 @@
       "labels": [],
       "body": "fixes #90",
       "createdAt": "2022-02-02T12:46:26Z",
-      "updatedAt": "2022-02-02T19:36:07Z",
+      "updatedAt": "2022-02-05T18:29:34Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "master",
       "baseRefOid": "3852c066d044326aac5f59fc6f9b4b34729a881b",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-6",
-      "headRefOid": "70d29b4ef08074019cb7d3df107bb7d6d186a6e7",
+      "headRefOid": "25d46e1125ab2f5ee8e4a14e70cad56c4756f036",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> The old text was stating \"do not send if no non-probing packet received over 3 RTT\". The new text essentially adds \"do not send if no non-probing packet received or acknowledged over 3 RTT.\" At first sight it looks right, but there is a tension. Suppose that, as a receiver, I wish the sender would stop sending on a path. With the old rule, I can simply stop sending on that path. With the new rule, I would have to also stop acknowledging packets, even if those packets were received correctly. That's not natural, a tension between signalling path preference and creating artificial losses. All considered, I would rather keep the old text.\r\n\r\nMy understanding is that if I am a receiver that wants to proactively cause a sender to stop sending, I should use the explicit way of sending a path abandon frame. The idle timeout handles the case when a receiver is unaware of a path change that leads to communication failure. If that is the purpose, as long as the receiver can receive packets in the sender-to-receiver direction and acknowledge on another path, it looks to me that we should still allow the sender to use that path. But I feel if we do that, we are diverging from the bidirectional nature of a path described in the draft, which worths more discussion.",
+          "createdAt": "2022-02-03T00:57:57Z",
+          "updatedAt": "2022-02-03T00:57:57Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree with @yfmascgy that if you want to close a path, you should use the abandon frame. This sentence covers the case where a path was idle for a while and therefore should be closed silently as it might not work anymore anyway. However, if you have received packet on the path or have an indication that packets you've sent on the path were received by the other end, the path is clearly not idle and working. I also agree with @yfmascgy that that means you only know for sure that the path is still working in one direction and that might need further discussion.",
+          "createdAt": "2022-02-03T09:46:28Z",
+          "updatedAt": "2022-02-03T09:46:28Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM4z6q7Q",
@@ -6093,6 +6122,186 @@
           "createdAt": "2022-02-02T19:36:07Z",
           "updatedAt": "2022-02-02T19:36:07Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM4z81qY",
+          "commit": {
+            "abbreviatedOid": "70d29b4"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-03T09:41:38Z",
+          "updatedAt": "2022-02-03T09:41:39Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nin the last 3 path RTTs or (b) no non-probing packet sent over this\r\n```",
+              "createdAt": "2022-02-03T09:41:38Z",
+              "updatedAt": "2022-02-03T09:41:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM4z-u8K",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-03T16:18:59Z",
+          "updatedAt": "2022-02-03T16:19:00Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "The use of \"or\" is ambiguous. We want to say that receiving data in one direction proves that the receiving direction works, and receiving acknowledgements proves that the sending direction works. Stop sending should logically be tied to the sending direction. If packets sent on a path are not acked, then the node should stop sending because the path is probably broken. But isn't that already covered? \r\n\r\nI think the text mixes two issues: stop sending because the path is broken; and, stop sending because the peer would rather not use it anymore. The peer not sending \"non probing\" data on the path may be an indication that it does not want to use it anymore. Or it may be an indication that it has nothing to send right now. Which means the signal is ambiguous, and using ambiguous signals is a bad idea. I think we should come down to two simple ideas:\r\n\r\n* nodes should monitor the quality of paths. If packets sent on the path are not acked, that means the quality is bad and the path should probably not be used.\r\n* nodes that want they peer to stop using a specific path should signal it using \"abandon path\" frame.",
+              "createdAt": "2022-02-03T16:19:00Z",
+              "updatedAt": "2022-02-03T16:19:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40BIPd",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-04T06:26:51Z",
+          "updatedAt": "2022-02-04T06:26:51Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I agree with the two simple ideas described above, I think it makes things much more clear.",
+              "createdAt": "2022-02-04T06:26:51Z",
+              "updatedAt": "2022-02-04T06:26:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40C-gJ",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-04T14:59:10Z",
+          "updatedAt": "2022-02-04T14:59:11Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I also agree with the simpler ideas. The host should stop sending packets on a path if a) it experiences too many losses (i.e., they never got acknowledged), or b) a ABANDON_PATH frame has been sent/received concerning that path.",
+              "createdAt": "2022-02-04T14:59:10Z",
+              "updatedAt": "2022-02-04T14:59:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40DANN",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-04T15:04:28Z",
+          "updatedAt": "2022-02-04T15:04:29Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "@qdeconinck @huitema are you saying a node should not consider a path a closed if it was idle for RTTs? This was the original intent of the text.",
+              "createdAt": "2022-02-04T15:04:29Z",
+              "updatedAt": "2022-02-04T15:04:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40DCkk",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-04T15:12:05Z",
+          "updatedAt": "2022-02-04T15:12:05Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "My point here is to have clear signals. I think we could leave an \"idle timer\" per path, but idle means \"no sent packets acknowledged not received packets\" on that path, and the duration of the (local) path idle timer should have been advertised (e.g., we could reuse the max_idle_timeout transport parameter per path, or define a new one if needed).",
+              "createdAt": "2022-02-04T15:12:05Z",
+              "updatedAt": "2022-02-04T15:13:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40EB7h",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-04T19:04:02Z",
+          "updatedAt": "2022-02-04T19:04:03Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Reusing the negotiated idle timer is the simpler solution for now.",
+              "createdAt": "2022-02-04T19:04:03Z",
+              "updatedAt": "2022-02-04T19:04:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40Ftt4",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-05T08:08:36Z",
+          "updatedAt": "2022-02-05T08:08:36Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "This is linked to a previous discussion on issue #51 . At that time, we were wondering whether to we should use max_idle_timeout or define something like max_path_idle_timeout. The max_idle_timeout in RFC9000 is used to close the whole connection, so maybe we want something per-path?",
+              "createdAt": "2022-02-05T08:08:36Z",
+              "updatedAt": "2022-02-05T08:08:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40F45C",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-05T18:29:33Z",
+          "updatedAt": "2022-02-05T18:29:34Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Defining an idle timer per path would make control more precise. It would also be one more parameter that administrators will have to worry about. How do you set up this new parameter? Should it be the same for every path? How would it relate to the globally negotiated idle timer? I am not sure that the complexity is worth it. If a node wants to abandon a path before the globally defined timer expires, they can always explicitly abandon the path before the timer expires. I would rather keep it simple and have just one timer.",
+              "createdAt": "2022-02-05T18:29:34Z",
+              "updatedAt": "2022-02-05T18:29:34Z"
+            }
+          ]
         }
       ]
     }
