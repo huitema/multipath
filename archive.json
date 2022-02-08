@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-02-06T00:38:21.140037+00:00",
+  "timestamp": "2022-02-08T00:33:23.945183+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -6082,7 +6082,7 @@
       "labels": [],
       "body": "fixes #90",
       "createdAt": "2022-02-02T12:46:26Z",
-      "updatedAt": "2022-02-05T18:29:34Z",
+      "updatedAt": "2022-02-07T15:02:39Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "master",
       "baseRefOid": "3852c066d044326aac5f59fc6f9b4b34729a881b",
@@ -6300,6 +6300,26 @@
               "body": "Defining an idle timer per path would make control more precise. It would also be one more parameter that administrators will have to worry about. How do you set up this new parameter? Should it be the same for every path? How would it relate to the globally negotiated idle timer? I am not sure that the complexity is worth it. If a node wants to abandon a path before the globally defined timer expires, they can always explicitly abandon the path before the timer expires. I would rather keep it simple and have just one timer.",
               "createdAt": "2022-02-05T18:29:34Z",
               "updatedAt": "2022-02-05T18:29:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40JJMJ",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-07T15:02:39Z",
+          "updatedAt": "2022-02-07T15:02:39Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Okay, we can have more discussion on issues #51. For now and for this PR, is the proposal to replace \"in the last 3 path RTTs\" with \"for at least max_idle_timeout milliseconds\" or do we want some entirely different text? If so, please propose a new PR!",
+              "createdAt": "2022-02-07T15:02:39Z",
+              "updatedAt": "2022-02-07T15:02:40Z"
             }
           ]
         }
