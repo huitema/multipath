@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 7 August 2022                                Q. De Coninck, Ed.
+Expires: 13 August 2022                               Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         3 February 2022
+                                                         9 February 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 August 2022.
+   This Internet-Draft will expire on 13 August 2022.
 
 Copyright Notice
 
@@ -382,7 +382,7 @@ Table of Contents
    for too long.  The connection idle timeout in multipath QUIC is
    defined as "no packet received on any path for the duration of the
    idle timeout".  When only one path is available, servers MUST follow
-   the specifications in [QUIC-TRANSPORT]
+   the specifications in [QUIC-TRANSPORT].
 
    When more than one path is available, hosts shall monitor the arrival
    of non-probing packets and the acknowledgements for the packets sent
