@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-02-08T00:33:23.945183+00:00",
+  "timestamp": "2022-02-10T00:33:57.638382+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -26,7 +26,7 @@
     {
       "name": "help wanted",
       "description": "Extra attention is needed",
-      "color": "008672"
+      "color": "9F9014"
     },
     {
       "name": "good first issue",
@@ -49,11 +49,6 @@
       "color": "ffffff"
     },
     {
-      "name": "For -01",
-      "description": "Will not address this issue for -00 but keep it open",
-      "color": "e99695"
-    },
-    {
       "name": "has PR",
       "description": "",
       "color": "37F263"
@@ -64,9 +59,14 @@
       "color": "5A8582"
     },
     {
-      "name": "move to wg adopted draft",
+      "name": "editorial",
       "description": "",
-      "color": "E33318"
+      "color": "CAC593"
+    },
+    {
+      "name": "design",
+      "description": "",
+      "color": "F3B663"
     }
   ],
   "issues": [
@@ -80,11 +80,12 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
-        "For -01"
+        "has PR",
+        "editorial"
       ],
       "body": "There is one part I am afraid people might feel a little bit hard to follow: the three types of path identifiers in the PATH_STATUS frame. Those three types of path identifiers were introduced in order to be compatible with zero-length CID use cases, so I think we might need two additional example figures (like figure 3 in the current draft), one for (non-zero length CID, zero-length CID) and the other one for (zero-length CID & zero-length CID). Do you think that is a good idea? I can work on those figures if it doesn't complicate the flow of the draft.",
       "createdAt": "2021-10-15T05:54:13Z",
-      "updatedAt": "2022-01-20T21:29:58Z",
+      "updatedAt": "2022-02-09T09:29:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -532,11 +533,11 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "move to wg adopted draft"
+        "design"
       ],
       "body": "I believe stand-by (or backup) has been useful in MPTCP. This is not really about scheduling because all it says is: I won't use this path actively(yet)  but please leave it open.",
       "createdAt": "2021-10-18T07:56:55Z",
-      "updatedAt": "2022-01-20T11:03:43Z",
+      "updatedAt": "2022-02-09T09:20:24Z",
       "closedAt": null,
       "comments": [
         {
@@ -621,11 +622,11 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
-        "move to wg adopted draft"
+        "design"
       ],
       "body": "While discussing single packet space vs multi packet space designs, @martinduke brought up the topic of hardware offloading. The effect of any design changes on packet encryption/decryption should take HW offloads into account. As I understand it, single packet space would not modify the packet encryption/decryption logic, but the multi packet space design would because of the difference nonce length. Additionally, since multi-path would be a negotiated feature/extension, that would mean all connections that don't negotiate the feature would have the \"old\" model/logic, where as the connections that do would have the new encryption/decryption logic. IMO, this could significantly complicated HW offloads.",
       "createdAt": "2021-10-18T16:38:38Z",
-      "updatedAt": "2022-01-11T12:37:38Z",
+      "updatedAt": "2022-02-09T09:20:33Z",
       "closedAt": null,
       "comments": [
         {
@@ -708,12 +709,12 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
-        "For -01",
-        "has PR"
+        "has PR",
+        "design"
       ],
       "body": "Currently, the multiple packet number spaces proposal relies on the sequence number of the Connection ID when a non-zero connection ID is used. With non-zero-length Connection IDs at both ends, it is indeed possible that over a same path/5-tuple, the client reaches the server using a DCID with a sequence number that is different from the sequence number of the DCID used by the server to reach the client (e.g., Figure 2). In the current draft, we consider that if the connection ID is zero-length, the packet number space identifier is 0, and applying multiple packet number spaces is thus not possible.\r\n\r\nI believe we can do better than this. Consider the situation where the client uses a non-zero length DCID to reach the server while the server uses zero-length DCID. In this case, it is the client that initiates the usage of a path with path validation, associating a server-provided non-zero-length DCID to reach the server. Once the first client's packet reaches the server on the new path, the server can associate the client's 5-tuple to the sequence number of the used Destination Connection ID, making a valid Packet Number Space Identifier. The client can easily map incoming packets on the 5-tuple to the associated DCID sequence number.\r\n\r\nDoes this sound reasonable?",
       "createdAt": "2021-10-19T08:43:58Z",
-      "updatedAt": "2022-01-11T12:39:48Z",
+      "updatedAt": "2022-02-09T09:20:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -904,11 +905,11 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "For -01"
+        "design"
       ],
       "body": "I have a sentence in the intro that this draft provide some basic scheduling guidance. I was think about something like: Data belonging to the same stream should be sent over the same path. If a new stream is opened, a packet is selected based on the current load (e.g. number of stream/max congestion window). Or something else?\r\n\r\nOr is the plan to really not say anything here?",
       "createdAt": "2021-10-22T16:01:19Z",
-      "updatedAt": "2022-01-11T15:57:03Z",
+      "updatedAt": "2022-02-09T09:21:15Z",
       "closedAt": null,
       "comments": [
         {
@@ -1087,11 +1088,11 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "move to wg adopted draft"
+        "design"
       ],
       "body": "In RFC9000 path migration is restricted to clients only, mainly because of problems with NATs which a) is the main use case to have migrations (address change at the client only) and b) could anyway cause failure for mitigation attempts from the server.\r\n\r\nHowever, with multipath, failure of opening a new path is less critical as the old path(s) is not abandon at the same time. Therefore we should further discussion if that restriction is still technical useful or if it can be released easily.\r\n\r\nThis issue was initially discussed as part of issue #31 ",
       "createdAt": "2021-10-25T10:49:06Z",
-      "updatedAt": "2022-01-12T09:12:31Z",
+      "updatedAt": "2022-02-09T09:21:24Z",
       "closedAt": null,
       "comments": [
         {
@@ -1141,11 +1142,11 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
-        "move to wg adopted draft"
+        "design"
       ],
       "body": "As we have 0-RTT transmission in QUIC-TRANSPORT, and path validation brings at lease one round-trip-time delay for data to be sent on the new path, can we add some mechanism to provide anti-amplification limitation and support this scenario?",
       "createdAt": "2021-10-25T12:31:26Z",
-      "updatedAt": "2022-01-11T12:31:26Z",
+      "updatedAt": "2022-02-09T09:21:46Z",
       "closedAt": null,
       "comments": []
     },
@@ -1933,10 +1934,12 @@
       "author": "obonaventure",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "body": "With a packet number space per path, the ACK_MP frame provides the per path ECN feedback that enables a sender to detect congestion using ECN on a specific path. The per-path congestion control can adjust the congestion window based on the received feedback.\r\n\r\nWith a single packet number space shared among the different paths, the ECN fields of the ACK frame provide ECN information that is common to all paths. This makes it impossible for a sender to determine which path is affected by congestion when it receives an ACK frame with positive ECN counters. A per-path congestion control cannot easily react to such an ambiguous ECN feedback.",
       "createdAt": "2022-01-12T16:24:11Z",
-      "updatedAt": "2022-01-12T16:24:11Z",
+      "updatedAt": "2022-02-09T09:22:00Z",
       "closedAt": null,
       "comments": []
     },
@@ -1949,10 +1952,12 @@
       "author": "obonaventure",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "The sentence above is part of the introduction, but the should is misleading for congestion control at least (we have a MUST for per-path congestion control later).\r\n\r\nI would suggest to split the above sentence in two parts:\r\n-  Congestion Control must be performed per-path \r\n-  Path MTU should be performed per path\r\n\r\nWe should probably list somewhere in the document the state that must/should be maintained on a per-path basis and the state that is related to the connection. This could clarify some of the mechanisms.\r\n\r\nConcerning PathMTU, I would suggest to stay with a should and not a must since an implementation could simply track the minimum MTU among the different paths without maintaining per-path MTU. Such an implementation would work and if the MTUs do not differ significantly, it would probably be simpler than an implementation than maintains per-path MTU and needs to adjust the packets based on the path where each packet is sent.\r\n\r\nConcerning RTT, we discuss the problem of measuring the RTT later with the packet number spaces discussion. Furthermore, some congestion control schemes need an accurate per-path RTT while others do not strictly require rtt estimations. ",
       "createdAt": "2022-01-12T17:33:01Z",
-      "updatedAt": "2022-01-12T17:33:01Z",
+      "updatedAt": "2022-02-09T09:22:26Z",
       "closedAt": null,
       "comments": []
     },
@@ -1965,10 +1970,13 @@
       "author": "obonaventure",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "In 3.2.3, we have the following paragraph:\r\n\r\n     When more than one path is available, servers shall monitor the arrival of non-probing packets on the available paths. Servers   \r\n     SHOULD stop sending traffic on paths through where no non-probing packet was received in the last 3 path RTTs, but MAY\r\n     ignore that rule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints can send ack-eliciting packets\r\n     such as packets containing PING frames Section 19.2 of [QUIC-TRANSPORT] on that path to keep it alive. Sending periodic\r\n     PING frames also helps prevent middlebox timeout, as discussed in Section 10.1.2 of [QUIC-TRANSPORT].\r\n\r\nThis paragraph implicitly indicates that we consider a path to be active if we send and receive packets on this path. This definition works well for MPTCP where each data packet triggers an ACK on the same path. In MPQUIC, a server could have two paths that it uses to send data. However, the client might decide to always send the ACKs on only one path (e.g. the lowest delay one). In this case, the two paths are clearly active, but the server could consider the higher delay path to be inactive since it does not receive packets over this path. It could send PING frames to trigger data packets, but then it would need to send one PING every 3 RTT, which seams excessive. \r\n\r\nI would suggest to rewrite the text as follows (I removed Server, because I think the recommendation should be generic):\r\n\r\n     When more than one path is available, hosts shall monitor both the arrival of non-probing packets and the acknowledgements \r\n     for the packets sent over each path. Hosts SHOULD stop sending traffic on paths whether either: (a) no non-probing packet\r\n     was received in the last 3 path RTT or (b) no non-probing packet sent over this path was acknowledged during the last 3 path \r\n     RTT, but MAY ignore that rule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints can send \r\n     ack-eliciting packets such as packets containing PING frames Section 19.2 of [QUIC-TRANSPORT] on that path to keep \r\n     it alive. Sending periodic PING frames also helps prevent middlebox timeout, as discussed in Section 10.1.2 of [QUIC-TRANSPORT].\r\n",
       "createdAt": "2022-01-14T15:37:35Z",
-      "updatedAt": "2022-02-03T19:02:24Z",
+      "updatedAt": "2022-02-09T09:29:30Z",
       "closedAt": null,
       "comments": [
         {
@@ -2012,6 +2020,13 @@
           "body": "I can look at what I implemented in picoquic:\r\n\r\n* If there is no traffic in either direction for the idle period, the path is automatically abandoned. If traffic is sent and acked, or traffic is received, the path is not considered idle. This is pretty much what Olivier proposed.\r\n* If there is a \"timer loss\", and if there is an alternate, the path is put in a low priority list. The node will send ping and try get an ack. If no ack is received after N trials, the path is abandoned.\r\n* If \"abandon path\" frame is received, the path is abandoned.",
           "createdAt": "2022-02-03T19:02:24Z",
           "updatedAt": "2022-02-03T19:02:24Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I marked this issue as editorial as we have an editorial PR for it. However, I open a new issue for the per path idle timeout discussion (#95).\r\n\r\nDo we need another issue to clarify path closure or sending of keep-alive traffic? However this might be covered in other parts of the draft already...? ",
+          "createdAt": "2022-02-09T09:28:13Z",
+          "updatedAt": "2022-02-09T09:28:13Z"
         }
       ]
     },
@@ -2024,10 +2039,12 @@
       "author": "obonaventure",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "RFC9000 defines a list of transport parameters.\r\n\r\n0x01 | max_idle_timeout | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x02 | stateless_reset_token | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x03 | max_udp_payload_size | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x04 | initial_max_data | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x05 | initial_max_stream_data_bidi_local | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x06 | initial_max_stream_data_bidi_remote | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x07 | initial_max_stream_data_uni | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x08 | initial_max_streams_bidi | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x09 | initial_max_streams_uni | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0a | ack_delay_exponent | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0b | max_ack_delay | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0c | disable_active_migration | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0d | preferred_address | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0e | active_connection_id_limit | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x0f | initial_source_connection_id | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG] | \u00a0\r\n0x10 | retry_source_connection_id | permanent | [RFC9000, Section 18.2] | 2021-02-11 | IETF | [QUIC_WG]\r\n\r\n\r\nThese transport parameters apply to all the paths that compose a Multipath QUIC connection. We should probably confirm this in the mpquic draft to avoid any misinterpretation (e.g. for max_idle_timeout or ack delays). There are two transport parameters that could warrant some discussion:\r\n\r\n- disable_active_migration : This transport parameter is incompatible with enable_multipath. An endpoint that receives both this transport parameter and a non zero enable_multipath parameter MUST treat this as a connection error of type\r\nMP_CONNECTION_ERROR and close the connection.\r\n- preferred_address: RFC9000, section 9.2.1 contains the following:\r\n\r\n   Once the handshake is confirmed, the client SHOULD select one of the two addresses provided by the server and initiate path    \r\n  validation (see Section 8.2). A client constructs packets using any previously unused active connection ID, taken from either the \r\n  preferred_address transport parameter or a NEW_CONNECTION_ID frame.\r\n\r\n  As soon as path validation succeeds, the client SHOULD begin sending all future packets to the new server address using the \r\n  new connection ID and discontinue use of the old server address. If path validation fails, the client MUST continue sending all \r\n  future packets to the server's original IP address.\r\n\r\nFor multipath, do we want to be stronger than SHOULD select one ? Can a client create news paths towards the initial address or only to one of the preferred addresses ? Should the client use both addresses (IPv4 and IPv6) if non-empty ?",
       "createdAt": "2022-01-18T13:39:57Z",
-      "updatedAt": "2022-02-02T12:36:53Z",
+      "updatedAt": "2022-02-09T09:28:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -2085,6 +2102,24 @@
           "updatedAt": "2022-01-20T10:59:31Z"
         }
       ]
+    },
+    {
+      "number": 95,
+      "id": "I_kwDOGNtpaM5DQA8q",
+      "title": "Do we need a transport parameter to negotiate max path idle timeout?",
+      "url": "https://github.com/quicwg/multipath/issues/95",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "design"
+      ],
+      "body": "This was discussed in issue #51 and PR #94.",
+      "createdAt": "2022-02-09T09:25:51Z",
+      "updatedAt": "2022-02-09T09:28:52Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -3451,12 +3486,10 @@
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [
-        "For -01"
-      ],
+      "labels": [],
       "body": "Attempt to address #27, probably more text will be needed afterwards.",
       "createdAt": "2021-10-22T09:12:05Z",
-      "updatedAt": "2022-01-11T12:13:06Z",
+      "updatedAt": "2022-02-09T09:19:33Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "master",
       "baseRefOid": "7bbb37fb2db5d8be017016badcc9fb2b312e1c7d",
@@ -6082,13 +6115,13 @@
       "labels": [],
       "body": "fixes #90",
       "createdAt": "2022-02-02T12:46:26Z",
-      "updatedAt": "2022-02-07T15:02:39Z",
+      "updatedAt": "2022-02-09T10:31:19Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "master",
       "baseRefOid": "3852c066d044326aac5f59fc6f9b4b34729a881b",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-6",
-      "headRefOid": "25d46e1125ab2f5ee8e4a14e70cad56c4756f036",
+      "headRefOid": "c8bbfb493b1a108812259f09c094e66bac096848",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -6320,6 +6353,86 @@
               "body": "Okay, we can have more discussion on issues #51. For now and for this PR, is the proposal to replace \"in the last 3 path RTTs\" with \"for at least max_idle_timeout milliseconds\" or do we want some entirely different text? If so, please propose a new PR!",
               "createdAt": "2022-02-07T15:02:39Z",
               "updatedAt": "2022-02-07T15:02:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40RHIH",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-09T04:03:42Z",
+          "updatedAt": "2022-02-09T04:03:43Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I think, for now, we can replace the 3-RTT with the max_idle_timeout as Mirja @mirjak proposed. Regarding whether we want something per-path, if the timeout value is large enough, I prefer what Christian @huitema suggested that we have one timer. However, if we want a shorter timeout (something like 3 times RTT), then we might want to have a per-path timer because of path heterogeneity (For example, a 5G path's RTT could be much smaller than that of the other paths).",
+              "createdAt": "2022-02-09T04:03:43Z",
+              "updatedAt": "2022-02-09T04:03:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40SCfe",
+          "commit": {
+            "abbreviatedOid": "25d46e1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-09T09:14:15Z",
+          "updatedAt": "2022-02-09T09:14:15Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\nin {{QUIC-TRANSPORT}}.\r\n```",
+              "createdAt": "2022-02-09T09:14:15Z",
+              "updatedAt": "2022-02-09T09:14:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40SDVo",
+          "commit": {
+            "abbreviatedOid": "c8bbfb4"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-09T09:16:59Z",
+          "updatedAt": "2022-02-09T09:17:02Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\nWhen more than one path is available, hosts shall monitor the arrival\r\nof non-probing packets and the acknowledgements \r\nfor the packets sent over each path. Hosts SHOULD stop\r\nsending traffic on a path if for at least max_idle_timeout milliseconds \r\n(a) no non-probing packet was received or (b) no non-probing\r\npacket sent over this path was acknowledged, but MAY ignore that\r\nrule if it would disqualify\r\n```",
+              "createdAt": "2022-02-09T09:17:00Z",
+              "updatedAt": "2022-02-09T09:17:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM40ScW8",
+          "commit": {
+            "abbreviatedOid": "c8bbfb4"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-02-09T10:31:19Z",
+          "updatedAt": "2022-02-09T10:31:19Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "We can keep most of the max_idle_timeout definition, just provide an suggested version for the replacement of the origin paragraph without : \r\n\r\n\"Endpoints use the max_idle_timeout transport parameter to advertise \r\nthe idle timeout of each paths. When more than one path is available, \r\nendpoints shall monitor the arrival of non-probing packets on \r\nthe available paths. Endpoints SHOULD set the idle timers per path. \r\nAn endpoint restarts its path idle timer when a packet from its peer\r\nis received and processed successfully on this path, and endpoint also \r\nrestarts its idle timer when sending an ack-aliciting packet if no other\r\nack-eliciting packets have been sent since last receiving and processing \r\na packet on the current path. Endpoints SHOULD stop sending traffic \r\non the path if the path is idle timeout, but MAY ignore that rule \r\nif it would disqualify all available paths. \r\n\r\nTo avoid idle timeout of a path, endpoints can\r\nsend ack-eliciting packets such as packets containing PING frames\r\n{{Section 19.2 of QUIC-TRANSPORT}} on that path to keep it alive.\r\nSending periodic PING frames also helps prevent middlebox timeout,\r\nas discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}.\r\n\r\nNotice that one path may become unavailable before the path idle timeout, \r\nendpoints can send a PING or other ack-eliciting frame to test a path \r\nfor liveness following {{QUIC-TRANSPORT}}. An endpoint SHOULD send \r\nPATH_ABANDON frame if it wants to stop using the path immediately, \r\ninstead of waiting for the path idle timeout.\"\r\n",
+              "createdAt": "2022-02-09T10:31:19Z",
+              "updatedAt": "2022-02-09T10:31:19Z"
             }
           ]
         }
