@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 4 August 2022                                Q. De Coninck, Ed.
+Expires: 4 September 2022                             Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         31 January 2022
+                                                            3 March 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 August 2022.
+   This Internet-Draft will expire on 4 September 2022.
 
 Copyright Notice
 
@@ -1113,8 +1113,8 @@ Table of Contents
               2021, <https://datatracker.ietf.org/doc/html/draft-liu-
               multipath-quic-04>.
 
-   [OLIA]     Khalili, R., Gast, N., Popovic, M., Upadhyay, U., and J.-
-              Y. Le Boudec, "MPTCP is not pareto-optimal: performance
+   [OLIA]     Khalili, R., Gast, N., Popovic, M., Upadhyay, U., and J.
+              Le Boudec, "MPTCP is not pareto-optimal: performance
               issues and a possible solution", Proceedings of the 8th
               international conference on Emerging networking
               experiments and technologies, ACM , 2012.
@@ -1145,35 +1145,29 @@ Authors' Addresses
 
    Yanmei Liu (editor)
    Alibaba Inc.
-
    Email: miaoji.lym@alibaba-inc.com
 
 
    Yunfei Ma
    Alibaba Inc.
-
    Email: yunfei.ma@alibaba-inc.com
 
 
    Quentin De Coninck (editor)
    UCLouvain
-
    Email: quentin.deconinck@uclouvain.be
 
 
    Olivier Bonaventure
    UCLouvain
-
    Email: olivier.bonaventure@uclouvain.be
 
 
    Christian Huitema
    Private Octopus Inc.
-
    Email: huitema@huitema.net
 
 
    Mirja Kuehlewind (editor)
    Ericsson
-
    Email: mirja.kuehlewind@ericsson.com
