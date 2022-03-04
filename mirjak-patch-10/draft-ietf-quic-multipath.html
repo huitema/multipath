@@ -1804,15 +1804,14 @@ packet schedulers depending on the application goals.<a href="#section-6-2" clas
       <h2 id="name-recovery">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-recovery" class="section-name selfRef">Recovery</a>
       </h2>
-<p id="section-7-1">Simultaneous use of multiple paths enables new techniques to cope with packet losses.
-When multiple paths are available, QUIC implementation can use
-different retransmission strategies to cope with losses.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">Possible strategies include: a) retransmitting lost frames over the
+<p id="section-7-1">Simultaneous use of multiple paths enables different 
+retransmission strategies to cope with losses such as:
+a) retransmitting lost frames over the
 same path, b) retransmitting lost frames on a different or
 dedicated path, and c) duplicate lost frames on several paths (not
 recommended for general purpose use due to the network
 overhead). While this document does not preclude a specific
-strategy, more detailed specification is out of scope.<a href="#section-7-2" class="pilcrow">¶</a></p>
+strategy, more detailed specification is out of scope.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="packet-number-space-and-use-of-connection-id">
