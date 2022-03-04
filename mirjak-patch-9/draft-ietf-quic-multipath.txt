@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 4 September 2022                             Q. De Coninck, Ed.
+Expires: 5 September 2022                             Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            3 March 2022
+                                                            4 March 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2022.
+   This Internet-Draft will expire on 5 September 2022.
 
 Copyright Notice
 
@@ -271,12 +271,12 @@ Table of Contents
    the definition in [QUIC-TRANSPORT] disable_active_migration also
    disables multipath support, except "after a client has acted on a
    preferred_address transport parameter" Section 18.2. of
-   [QUIC-TRANSPORT].  Further, it is out of scope for this document if
-   the old address can also be used for multipath after a client has
-   migrated to the address provided in the preferred_address transport
-   parameter.  However, it SHOULD NOT be assumed that it is possible to
-   use both addresses simultaneously without further confirmation from
-   the other host.
+   [QUIC-TRANSPORT].  Further, it is out of scope for this document to
+   specify if the old address can also be used for multipath after a
+   client has migrated to the address provided in the preferred_address
+   transport parameter.  However, it SHOULD NOT be assumed that it is
+   possible to use both addresses simultaneously without further
+   confirmation from the other host.
 
 3.  Path Setup and Removal
 
