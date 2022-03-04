@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 4 September 2022                             Q. De Coninck, Ed.
+Expires: 5 September 2022                             Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            3 March 2022
+                                                            4 March 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2022.
+   This Internet-Draft will expire on 5 September 2022.
 
 Copyright Notice
 
@@ -673,7 +673,7 @@ Table of Contents
    acknowledges multiple packets from different paths, the ECN feedback
    cannot unambiguously be assigned to a path.  Therefore if one of the
    ECN counters increases, especially the CE counter, hosts SHOULD only
-   acknowlegde packets from the same path where the ECN mark was
+   acknowledge packets from the same path where the ECN mark was
    observed in the same ACK frame.
 
    If a host receives an ACK frame that increases the CE counter and
