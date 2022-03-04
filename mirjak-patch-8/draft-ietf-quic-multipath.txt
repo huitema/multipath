@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 4 September 2022                             Q. De Coninck, Ed.
+Expires: 5 September 2022                             Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            3 March 2022
+                                                            4 March 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2022.
+   This Internet-Draft will expire on 5 September 2022.
 
 Copyright Notice
 
@@ -125,8 +125,7 @@ Table of Contents
    *  Congestion Control must be per-path (following [QUIC-TRANSPORT])
       which usually also requires per-path RTT measurements
 
-   *  PMTU discovery should be performed per-path, however, the minimum
-      PMTU of all paths may be used on each paths
+   *  PMTU discovery should be performed per-path
 
    *  A path is determined by the 4-tuple of source and destination IP
       address as well as source and destination port.  Therefore there
