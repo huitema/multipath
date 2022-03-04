@@ -1804,19 +1804,19 @@ packet schedulers depending on the application goals.<a href="#section-6-2" clas
       <h2 id="name-recovery">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-recovery" class="section-name selfRef">Recovery</a>
       </h2>
-<p id="section-7-1">Simmultaneous use of multiple paths enables new techniques to cope with packet losses.
-In <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>, a lost packet can either be abandoned or retransmitted over the same path once it has been
-detected as lost. However, when multiple paths are available for the retransmission
-QUIC implementation can use different strategies to cope with losses.
+<p id="section-7-1">Simultaneous use of multiple paths enables new techniques to cope with packet losses.
+In <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>, a lost packet can either be abandoned or retransmitted over the
+same path. However, when multiple paths are available QUIC implementation can use
+different retransmission strategies to cope with losses.
 A simple strategy is to retransmit a lost frame over the same path.
-Another straegy would be to use the best path, e.g. in terms of latency,
+Another strategy would be to use the best path, e.g. in terms of latency,
 or use a dedicated path to send retransmissions. Depending on the
-appliaction needs another strategy could also be to simultaneously
+application needs another strategy could also be to simultaneously
 retransmit a lost frame over its original path and another one,
 however, this is not recommended for general purpose use due to
-the overhead but could be particualy beneficial for certain kind
+the overhead but could be particularly beneficial for certain kind
 of data or frames. This document does not preclude a specific strategy,
-however, more detailed specification of any such stragtegy is out of scope.<a href="#section-7-1" class="pilcrow">¶</a></p>
+however, more detailed specification of any such strategy is out of scope.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="packet-number-space-and-use-of-connection-id">
