@@ -1807,16 +1807,13 @@ packet schedulers depending on the application goals.<a href="#section-6-2" clas
 <p id="section-7-1">Simultaneous use of multiple paths enables new techniques to cope with packet losses.
 In <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>, a lost packet can either be abandoned or retransmitted over the
 same path. However, when multiple paths are available QUIC implementation can use
-different retransmission strategies to cope with losses.
-A simple strategy is to retransmit a lost frame over the same path.
-Another strategy would be to use the best path, e.g. in terms of latency,
-or use a dedicated path to send retransmissions. Depending on the
-application needs another strategy could also be to simultaneously
-retransmit a lost frame over its original path and another one,
-however, this is not recommended for general purpose use due to
-the overhead but could be particularly beneficial for certain kind
-of data or frames. This document does not preclude a specific strategy,
-however, more detailed specification of any such strategy is out of scope.<a href="#section-7-1" class="pilcrow">¶</a></p>
+different retransmission strategies to cope with losses.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">Possible strategies include: a) retransmitting lost frames over the
+same path, b) retransmitting lost frames on a different or
+dedicated path, and c) duplicate lost frames on several paths (not
+recommended for general purpose use due to the network
+overhead). While this document does not preclude a specific
+strategy, more detailed specification is out of scope.<a href="#section-7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="packet-number-space-and-use-of-connection-id">
